@@ -31,9 +31,9 @@ dbname <- args[4]
 conn <- odbcDriverConnect(paste("driver={SQL Server};server=", server, ";database=", dbname, ";uid=", uid, ";pwd=", pwd, ";", sep=""))
 sqlcmd <- paste("select Row, Term from ", args[6], sep=" ")
 # conn <- odbcDriverConnect("driver={SQL Server};server=;database=;uid=;pwd=")
-# sqlcmd <- ""
+# sqlcmd <- "select Row, Term from "
 res <- sqlQuery(conn, sqlcmd)
-# sqlcmd <- ""
+# sqlcmd <- "select Doc from "
 sqlcmd <- paste("select Doc from ", args[5], sep=" ")
 docnames <- sqlQuery(conn, sqlcmd)
 odbcClose(conn)
@@ -55,29 +55,43 @@ for(n in 2:length(datarows))
 	mx <- rbind(mx, mxtmp)
 }
 
+for(n in 1:length(docnames))
+{
+	colnames(mx)[n] <- paste(toString(n), toString(docnames[n]), sep=".")
+}
 
+for(n in 1:length(termnames))
+{
+	rownames(mx)[n] <- paste(toString(n), toString(termnames[n]), sep=".")
+}
 
-
-logfunc("log.txt", "SVD Calculating...")
 
 # X = T S D'
 # s$u %*% D %*% t(s$v) #  X = U D V'
+
+logfunc("log.txt", "SVD Calculating...")
+
 s <- svd(mx)
 svd_T <- s$u
 svd_S <- diag(s$d)
 svd_d <- t(s$v)
 
-mmx <- as.table(Mx_Convert_Double(as.matrix(mx)))
+
+mmx <- Mx_Convert_Double(as.matrix(mx))
 logfunc("log.txt", "Document Comparing...")
 svd_docCp <- t(mmx) %*% mmx
 logfunc("log.txt", "Term Comparing...")
 svd_termCp <- mmx %*% t(mmx)
+
+svd_docCp <- as.table(svd_docCp)
+svd_termCp <- as.table(svd_termCp)
 
 for(n in 1:length(docnames))
 {
 	colnames(svd_docCp)[n] <- paste(toString(n), toString(docnames[n]), sep=".")
 	rownames(svd_docCp)[n] <- paste(toString(n), toString(docnames[n]), sep=".")
 }
+
 for(n in 1:length(termnames))
 {
 	colnames(svd_termCp)[n] <- paste(toString(n), toString(termnames[n]), sep=".")
