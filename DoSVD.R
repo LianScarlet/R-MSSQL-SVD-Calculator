@@ -77,31 +77,31 @@ svd_S <- diag(s$d)
 svd_d <- t(s$v)
 
 
-mmx <- Mx_Convert_Double(as.matrix(mx))
-logfunc("log.txt", "Document Comparing...")
-svd_docCp <- t(mmx) %*% mmx
-logfunc("log.txt", "Term Comparing...")
-svd_termCp <- mmx %*% t(mmx)
+# mmx <- Mx_Convert_Double(as.matrix(mx))
+# logfunc("log.txt", "Document Comparing...")
+# svd_docCp <- t(mmx) %*% mmx
+# logfunc("log.txt", "Term Comparing...")
+# svd_termCp <- mmx %*% t(mmx)
 
-svd_docCp <- as.table(svd_docCp)
-svd_termCp <- as.table(svd_termCp)
+# svd_docCp <- as.table(svd_docCp)
+# svd_termCp <- as.table(svd_termCp)
 
-for(n in 1:length(docnames))
-{
-	colnames(svd_docCp)[n] <- paste(toString(n), toString(docnames[n]), sep=".")
-	rownames(svd_docCp)[n] <- paste(toString(n), toString(docnames[n]), sep=".")
-}
+# for(n in 1:length(docnames))
+# {
+# 	colnames(svd_docCp)[n] <- paste(toString(n), toString(docnames[n]), sep=".")
+# 	rownames(svd_docCp)[n] <- paste(toString(n), toString(docnames[n]), sep=".")
+# }
 
-for(n in 1:length(termnames))
-{
-	colnames(svd_termCp)[n] <- paste(toString(n), toString(termnames[n]), sep=".")
-	rownames(svd_termCp)[n] <- paste(toString(n), toString(termnames[n]), sep=".")
-}
+# for(n in 1:length(termnames))
+# {
+# 	colnames(svd_termCp)[n] <- paste(toString(n), toString(termnames[n]), sep=".")
+# 	rownames(svd_termCp)[n] <- paste(toString(n), toString(termnames[n]), sep=".")
+# }
 
 logfunc("log.txt", "Result Saving...")
 
-write.table(termnames, file = "Termnames.csv", sep = ",", col.names = NA, qmethod = "double")
-write.table(docnames, file = "Docnames.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(termnames, file = "Termnames.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(docnames, file = "Docnames.csv", sep = ",", col.names = NA, qmethod = "double")
 write.table(mx, file = "X.csv", sep = ",", col.names = NA, qmethod = "double")
 write.table(svd_T, file = "T.csv", sep = ",", col.names = NA, qmethod = "double")
 write.table(svd_S, file = "S.csv", sep = ",", col.names = NA, qmethod = "double")
