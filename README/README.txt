@@ -10,18 +10,25 @@
 1. 於 SQL Server 中建立 SVD 所需的 Documents View (DocView.jpg) 及 Terms View (TermView.jpg)
 2. 編輯 RunBuilder.bat
 	Process.bat <Server> <UserID> <UserPWD> <DBName> <DocView> <TermView> <New_MatrixTable> 
-		<New_MatrixTable>欲建立的 Table 名稱 ( Table 範例內容詳見 MxTable.jpg )
+	
+	<DocView> 	先前建立的 Documents View 名稱
+	<TermView>	先前建立的 Terms View 名稱
+	<New_MatrixTable>	存放 Matrix Rows 的 Table 名稱， Table 將由 BuildMatrix.sql 自動生成。務必確認當前資料庫中無同名之Table。
+
 2. 執行 RunBuilder.bat
 
 
 
 ====== RunExpr.bat 參數設置 ======
-1. 編輯 RunBuilder.bat
-	SVDExpr.R <ExprName> <DirPath> <Dimension_of_S>
-		<ExprName>實驗名稱( 會以此名稱建立資料夾存放結果 )
-		<DirPath>執行實驗所需要的 Matries FIle ( T.csv、S.csv、t(D).csv) 檔案存放的資料夾路徑
-		<Dimension_of_S>Matrix S 的大小
-1. 執行 RunBuilder.bat
+1. 編輯 RunExpr.bat
+	processExpr.bat <Server> <UserID> <UserPWD> <DBName> <ExprName> <DirPath> <Times> <increase n% of S per time>
+				
+	<ExprName> 	實驗名稱請以英文命名，勿使用特殊字元。程式將以此名稱於 Database建立Table。勿使用重複的實驗名稱。
+	<DirPath>	RunBuilder.bat 產生的資料夾路徑
+	<Times> 	計算的總次數 
+	<Increase n% of S per time>	S0的 Dimension 每次增加 n%
+
+2. 執行 RunExpr.bat
 
 
 	

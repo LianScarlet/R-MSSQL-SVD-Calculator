@@ -1,9 +1,9 @@
 begin try
-	select Term ,(
+	select TID, Term ,(
 		select ' ' + ltrim(str(
 		case charindex(Term, doc)
 		when 0 then 0
-		else 1
+		else ((LEN(Doc) - LEN(REPLACE(Doc,Term,''))) / LEN(Term)) * Weight
 		end
 		))  
 		from $(DocView) for xml path('')

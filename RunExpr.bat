@@ -1,3 +1,3 @@
-::SVDExpr.R <ExprName> <DirPath> <Division_of_S>
-rscript SVDExpr.R Expr MyPath 10
+::processExpr.bat <Server> <UserID> <UserPWD> <DBName> <ExprName> <DirPath> <Times> <increase n% of S per time>
+ProcessExpr.bat localhost User Password MyDB MyExpr MyPath 5 5
 pause
