@@ -83,17 +83,6 @@ for(n in 2:length(datarows))
 	mx <- rbind(mx, mxtmp)
 }
 
-# 將欄位命名以便觀察
-for(n in 1:length(docnames))
-{
-	colnames(mx)[n] <- toString(docnames[n])
-}
-
-for(n in 1:length(termnames))
-{
-	rownames(mx)[n] <- toString(termnames[n])
-}
-
 
 # X = T S D'
 # s$u %*% D %*% t(s$v) #  X = U D V'
