@@ -54,34 +54,47 @@ sqlcmd <- paste("select Row, CONVERT(nvarchar,TID) from ", mxview, sep=" ")
 # 執行SQL指令並取得回傳結果
 res <- sqlQuery(conn, sqlcmd)
 # sqlcmd <- "select Doc from "
-sqlcmd <- paste("select CONVERT(nvarchar,DID) from ", docview, sep=" ")
-docnames <- sqlQuery(conn, sqlcmd)
+sqlcmd <- paste("select CONVERT(nvarchar,DID), Doc from ", docview, sep=" ")
+docs <- sqlQuery(conn, sqlcmd)
 # 關閉連線
 odbcClose(conn)
 
 # 將取得的結果分別存入變數
 # res 的 column 1 
-datarows <- res[,1]
+datarows <- as.vector(res[,1])
 # res 的 column 2
-termnames <- res[,2]
-# docnames 的 column 1
-docnames <- docnames[,1]
+termnames <- as.vector(res[,2])
+# docs 的 column 1
+docIDs <- as.vector(docs[,1])
+docnames <- as.vector(docs[,2])
 
 
 logfunc("log.txt", "Matrix Building...")
 
+mx <- read.table(text = datarows)
 # 將第一筆 datarows 的資料存進 Matrix 型態的變數
 # 主要是為設定 Columns 的數量
-datarow <- datarows[1]
-mx <- read.table(text = toString(datarow))
+# datarow <- datarows[1]
+# mx <- read.table(text = toString(datarow))
 
 
-# 依序將每一筆 datarow append into Matrix
-for(n in 2:length(datarows))
-{
-	mxtmp <- read.table(text = toString(datarows[n]))
-	mx <- rbind(mx, mxtmp)
-}
+# # 依序將每一筆 datarow append into Matrix(效率差)
+# for(n in 2:length(datarows))
+# {
+# 	mxtmp <- read.table(text = toString(datarows[n]))
+# 	mx <- rbind(mx, mxtmp)
+# }
+
+# 將欄位命名以便觀察
+# for(n in 1:length(docnames))
+# {
+# 	colnames(mx)[n] <- toString(docnames[n])
+# }
+
+# for(n in 1:length(termnames))
+# {
+# 	rownames(mx)[n] <- toString(termnames[n])
+# }
 
 
 # X = T S D'
@@ -92,19 +105,29 @@ logfunc("log.txt", "SVD Calculating...")
 # 使用 svd Library 的函式計算 svd
 s <- svd(mx)
 # 將結果存入變數
-svd_T <- s$u
-svd_S <- diag(s$d)
-svd_d <- t(s$v)
+mx_T <- s$u
+mx_S <- diag(s$d)
+mx_d <- t(s$v)
 
 logfunc("log.txt", "Result Saving...")
 
-# 將所有結果以 .csv 格式寫入檔案，以便未來實驗使用
-write.table(termnames, file = "Termnames.csv", sep = ",", col.names = NA, qmethod = "double")
-write.table(docnames, file = "Docnames.csv", sep = ",", col.names = NA, qmethod = "double")
-write.table(mx, file = "X.csv", sep = ",", col.names = NA, qmethod = "double")
-write.table(round(svd_T,3), file = "T.csv", sep = ",", col.names = NA, qmethod = "double")
-write.table(round(svd_S,3), file = "S.csv", sep = ",", col.names = NA, qmethod = "double")
-write.table(round(svd_d,3), file = "t(D).csv", sep = ",", col.names = NA, qmethod = "double")
+# 將所有結果以 .RData 格式寫入檔案，之後用R做實驗可以快速讀取參數
+save(termnames,file="vt_TermNames.RData")
+save(docIDs,file="vt_DocIDs.RData")
+save(docnames,file="vt_DocNames.RData")
+save(mx,file="mx_X.RData")
+save(mx_T,file="mx_T.RData")
+save(mx_S,file="mx_S.RData")
+save(mx_d,file="mx_t(D).RData")
+
+# 將所有結果以 .csv 格式寫入檔案，以便其他程式讀取使用
+# write.table(termnames, file = "Termnames.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(docIDs, file = "DocIDs.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(docnames, file = "Docnames.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(mx, file = "X.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(round(mx_T,3), file = "T.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(round(mx_S,3), file = "S.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(round(mx_d,3), file = "t(D).csv", sep = ",", col.names = NA, qmethod = "double")
 
 logfunc("log.txt", "Program Complete...")
 

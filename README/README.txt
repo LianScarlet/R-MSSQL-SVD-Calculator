@@ -1,34 +1,37 @@
-====== «e¸m§@·~ ======
-1. ¦w¸Ë SQL Server
-2. ¦w¸Ë R  ( http://cran.r-project.org/bin/windows/base/ )
-3. ¨Ï¥Î RGui ¦w¸Ë R ®M¥ó RODBC ¡B svd
-4. ¶}±Ò ¥»¾÷ > ¤º®e > ¶i¶¥¨t²Î³]©w > Àô¹ÒÅÜ¼Æ >
-	¦b Path ¤¤·s¼W C:\Program Files\R\R-3.1.2\bin (¥i¯à¦]¦w¸Ë¸ô®|©Îª©¥»¤£¦P¦³¨Ç³\¬Û²§¡A½Ğ¦Û¦æ­×¥¿¸ô®| )
+ï»¿====== å‰ç½®ä½œæ¥­ ======
+1. å®‰è£ SQL Server
+2. å®‰è£ R  ( http://cran.r-project.org/bin/windows/base/ )
+3. ä½¿ç”¨ RGui å®‰è£ R å¥—ä»¶ RODBC ã€ svd
+4. é–‹å•Ÿ æœ¬æ©Ÿ > å…§å®¹ > é€²éšç³»çµ±è¨­å®š > ç’°å¢ƒè®Šæ•¸ >
+	åœ¨ Path ä¸­æ–°å¢ C:\Program Files\R\R-3.1.2\bin (å¯èƒ½å› å®‰è£è·¯å¾‘æˆ–ç‰ˆæœ¬ä¸åŒæœ‰äº›è¨±ç›¸ç•°ï¼Œè«‹è‡ªè¡Œä¿®æ­£è·¯å¾‘ )
 
 
-====== RunBuilder.bat °Ñ¼Æ³]¸m ======
-1. ©ó SQL Server ¤¤«Ø¥ß SVD ©Ò»İªº Documents View (DocView.jpg) ¤Î Terms View (TermView.jpg)
-2. ½s¿è RunBuilder.bat
-	Process.bat <Server> <UserID> <UserPWD> <DBName> <DocView> <TermView> <New_MatrixTable> 
+====== RunBuilder.bat åƒæ•¸è¨­ç½® ======
+1. æ–¼ SQL Server ä¸­å»ºç«‹ SVD æ‰€éœ€çš„ Documents View (DocView.jpg) åŠ Terms View (TermView.jpg)
+2. ç·¨è¼¯ RunBuilder.bat
+	Process.bat <Server> <UserID> <UserPWD> <DBName> <DocView> <TermView> <New_MatrixTable> <Method>
 	
-	<DocView> 	¥ı«e«Ø¥ßªº Documents View ¦WºÙ
-	<TermView>	¥ı«e«Ø¥ßªº Terms View ¦WºÙ
-	<New_MatrixTable>	¦s©ñ Matrix Rows ªº Table ¦WºÙ¡A Table ±N¥Ñ BuildMatrix.sql ¦Û°Ê¥Í¦¨¡C°È¥²½T»{·í«e¸ê®Æ®w¤¤µL¦P¦W¤§Table¡C
+	<DocView> 	å…ˆå‰å»ºç«‹çš„ Documents View åç¨±
+	<TermView>	å…ˆå‰å»ºç«‹çš„ Terms View åç¨±
+	<New_MatrixTable>	å­˜æ”¾ Matrix Rows çš„ Table åç¨±ï¼Œ Table å°‡ç”± BuildMatrix.sql 	è‡ªå‹•ç”Ÿæˆã€‚å‹™å¿…ç¢ºèªç•¶å‰è³‡æ–™åº«ä¸­ç„¡åŒåä¹‹Tableã€‚
+	<Method> 
+		0 - Termåœ¨Docä¸­å‡ºç¾næ¬¡(n>=1)ï¼Œåˆ†æ•¸ç‚º 1 * Weight
+		1 - Termåœ¨Docä¸­å‡ºç¾næ¬¡ï¼Œåˆ†æ•¸ç‚º n * Weight
 
-2. °õ¦æ RunBuilder.bat
+2. åŸ·è¡Œ RunBuilder.bat
 
 
 
-====== RunExpr.bat °Ñ¼Æ³]¸m ======
-1. ½s¿è RunExpr.bat
+====== RunExpr.bat åƒæ•¸è¨­ç½® ======
+1. ç·¨è¼¯ RunExpr.bat
 	processExpr.bat <Server> <UserID> <UserPWD> <DBName> <ExprName> <DirPath> <Times> <increase n% of S per time>
-				
-	<ExprName> 	¹êÅç¦WºÙ½Ğ¥H­^¤å©R¦W¡A¤Å¨Ï¥Î¯S®í¦r¤¸¡Cµ{¦¡±N¥H¦¹¦WºÙ©ó Database«Ø¥ßTable¡C¤Å¨Ï¥Î­«½Æªº¹êÅç¦WºÙ¡C
-	<DirPath>	RunBuilder.bat ²£¥Íªº¸ê®Æ§¨¸ô®|
-	<Times> 	­pºâªºÁ`¦¸¼Æ 
-	<Increase n% of S per time>	S0ªº Dimension ¨C¦¸¼W¥[ n%
+	
+	<ExprName> 	å¯¦é©—åç¨±è«‹ä»¥è‹±æ–‡å‘½åï¼Œå‹¿ä½¿ç”¨ç‰¹æ®Šå­—å…ƒã€‚ç¨‹å¼å°‡ä»¥æ­¤åç¨±æ–¼ Databaseå»ºç«‹Tableã€‚å‹¿ä½¿ç”¨é‡è¤‡çš„å¯¦é©—åç¨±ã€‚
+	<DirPath>	RunBuilder.bat ç”¢ç”Ÿçš„ .RData æª”æ¡ˆæ‰€åœ¨çš„çµ•å°è·¯å¾‘	
+	<Times> 	è¨ˆç®—çš„ç¸½æ¬¡æ•¸ 
+	<Increase n% of S per time>	S0çš„ Dimension æ¯æ¬¡å¢åŠ  n%
 
-2. °õ¦æ RunExpr.bat
+2. åŸ·è¡Œ RunExpr.bat
 
 
 	

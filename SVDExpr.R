@@ -18,6 +18,8 @@ Mx_Convert_Double <- function(mx)
 Save_BCP <- function( rows, cols, mx, BCPfile, part)
 {
 	# 儲存做BCP要用的字串
+	mx <- floor(mx * 100)
+	threshold <- mean(mx[mx>mean(mx)])
 	BCPtxt <- ""
 	# 檢查 columns 跟 rows 名稱是否相同，相同的話只需儲存下三角
 	check <- toString(cols) == toString(rows)
@@ -32,9 +34,9 @@ Save_BCP <- function( rows, cols, mx, BCPfile, part)
 			# cid <- strsplit(toString(cols[j]),"[.]")[[1]][1]
 			# Database 中的 attribute 是以 int 宣告 ， 
 			# 故將 Similarity 乘以100取得小數點後二位之數值
-			simi <- floor(mx[i,j] * 100)
+			simi <- mx[i,j]
 			# 數值高於門檻才紀錄
-			if(simi > 99)
+			if(simi > threshold)
 			{
 				# 將個數值組成資料表的 Row
 				BCPRow <- paste(rid, cid, toString(simi), toString(t), sep="\t")
@@ -54,7 +56,7 @@ Save_BCP <- function( rows, cols, mx, BCPfile, part)
 			write( BCPtxt, file=BCPfile, append=TRUE, sep="")	
 			BCPtxt <- ""
 		}
-	}		
+	}	
 }
 
 args <- commandArgs(trailingOnly = TRUE)
@@ -75,20 +77,31 @@ BCPpath <- paste(workdir, "\\",exprname, "\\",sep="")
 # 建議以 exprname 為名稱的資料夾
 dir.create(exprname, showWarnings = TRUE, recursive = FALSE)
 
-# 資料讀取，並從讀取的資料中取出需要的部分
-docnames <- read.csv("Docnames.csv", header = FALSE)
-docnames <- docnames[2:nrow(docnames),2:ncol(docnames)]
-termnames <- read.csv("Termnames.csv", header = FALSE)
-termnames <- termnames[2:nrow(termnames),2:ncol(termnames)]
-logfunc(logpath, "Reading T.csv ...")
-mx_T <- read.csv("T.csv", header = FALSE)
-mx_T <- Mx_Convert_Double(as.matrix(mx_T[2:nrow(mx_T),2:ncol(mx_T)]))
-logfunc(logpath, "Reading S.csv ...")
-mx_S <- read.csv("S.csv", header = FALSE)
-mx_S <- Mx_Convert_Double(as.matrix(mx_S[2:nrow(mx_S),2:ncol(mx_S)]))
-logfunc(logpath, "Reading t(D).csv ...")
-mx_d <- read.csv("t(D).csv", header = FALSE)
-mx_d <- Mx_Convert_Double(as.matrix(mx_d[2:nrow(mx_d),2:ncol(mx_d)]))
+# 資料讀取(.RData)，並從讀取的資料中取出需要的部分
+logfunc(logpath, "Reading .RData ...")
+load("vt_DocIDs.RData")
+load("vt_TermNames.RData")
+load("mx_T.RData")
+load("mx_S.RData")
+load("mx_t(D).RData")
+mx_T <- Mx_Convert_Double(as.matrix(mx_T))
+mx_S <- Mx_Convert_Double(as.matrix(mx_S))
+mx_d <- Mx_Convert_Double(as.matrix(mx_d))
+
+# 資料讀取(.cxv)，並從讀取的資料中取出需要的部分
+# docIDs <- read.csv("DocIDs.csv", header = FALSE)
+# docIDs <- docIDs[2:nrow(docIDs),2:ncol(docIDs)]
+# termnames <- read.csv("Termnames.csv", header = FALSE)
+# termnames <- termnames[2:nrow(termnames),2:ncol(termnames)]
+# logfunc(logpath, "Reading T.csv ...")
+# mx_T <- read.csv("T.csv", header = FALSE)
+# mx_T <- Mx_Convert_Double(as.matrix(mx_T[2:nrow(mx_T),2:ncol(mx_T)]))
+# logfunc(logpath, "Reading S.csv ...")
+# mx_S <- read.csv("S.csv", header = FALSE)
+# mx_S <- Mx_Convert_Double(as.matrix(mx_S[2:nrow(mx_S),2:ncol(mx_S)]))
+# logfunc(logpath, "Reading t(D).csv ...")
+# mx_d <- read.csv("t(D).csv", header = FALSE)
+# mx_d <- Mx_Convert_Double(as.matrix(mx_d[2:nrow(mx_d),2:ncol(mx_d)]))
 
 # 設定工作路徑
 setwd(exprname)
@@ -115,17 +128,23 @@ for(t in 1:times)
 
 	# 將 Matrix 中的結果以資料表的格式存入 DD.txt, TT.txt, TD.txt 
 	logfunc(logpath, "BCP File Saving...DocSimilarity")
-	Save_BCP( docnames, docnames, mx_DocCp, paste(BCPpath, "DD.txt", sep=""), t)
+	Save_BCP( docIDs, docIDs, mx_DocCp, paste(BCPpath, "DD.txt", sep=""), t)
 	logfunc(logpath, "BCP File Saving...TermSimilarity")
 	Save_BCP( termnames, termnames, mx_TermCp, paste(BCPpath, "TT.txt", sep=""), t)
 	logfunc(logpath, "BCP File Saving...TermDocAssociation")
-	Save_BCP( termnames, docnames, mx_X, paste(BCPpath, "TD.txt", sep=""), t)
+	Save_BCP( termnames, docIDs, mx_X, paste(BCPpath, "TD.txt", sep=""), t)
+
+	# 將 Matrix 中的結果寫入 .RData 檔案
+	save(mx_X,file="mx_X.RData")
+	save(mx_DocCp,file="mx_DocCp.RData")
+	save(mx_TermCp,file="mx_TermCp.RData")
 
 	# 將 Matrix 中的結果寫入 .csv 檔案
-	logfunc(logpath, "csv Files Saving...")
-	write.table(mx_X, file = "X.csv", sep = ",", col.names = NA, qmethod = "double")
-	write.table(mx_DocCp, file = "DocComparison.csv", sep = ",", col.names = NA, qmethod = "double")
-	write.table(mx_TermCp, file = "TermComparison.csv", sep = ",", col.names = NA, qmethod = "double")
+	# logfunc(logpath, "csv Files Saving...")
+	# write.table(mx_X, file = "X.csv", sep = ",", col.names = NA, qmethod = "double")
+	# write.table(mx_DocCp, file = "DocComparison.csv", sep = ",", col.names = NA, qmethod = "double")
+	# write.table(mx_TermCp, file = "TermComparison.csv", sep = ",", col.names = NA, qmethod = "double")
+	
 	# 跳回當前路徑的前一層
 	setwd("..")	
 }
