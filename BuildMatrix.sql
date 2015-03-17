@@ -5,7 +5,7 @@ set @Caltype = $(Method)
 begin try
 	select TID, Term ,(
 		select ' ' + ltrim(str(
-		case charindex(Term, doc)
+		case charindex(Term, Doc)
 		when 0 then 0
 		else 
 			case @Caltype

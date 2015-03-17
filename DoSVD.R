@@ -54,7 +54,7 @@ sqlcmd <- paste("select Row, CONVERT(nvarchar,TID) from ", mxview, sep=" ")
 # 執行SQL指令並取得回傳結果
 res <- sqlQuery(conn, sqlcmd)
 # sqlcmd <- "select Doc from "
-sqlcmd <- paste("select CONVERT(nvarchar,DID), Doc from ", docview, sep=" ")
+sqlcmd <- paste("select CONVERT(nvarchar,DID), Doc, DocName from ", docview, sep=" ")
 docs <- sqlQuery(conn, sqlcmd)
 # 關閉連線
 odbcClose(conn)
@@ -64,9 +64,11 @@ odbcClose(conn)
 datarows <- as.vector(res[,1])
 # res 的 column 2
 termnames <- as.vector(res[,2])
-# docs 的 column 1
+# docs 的 column 1,2,3
 docIDs <- as.vector(docs[,1])
-docnames <- as.vector(docs[,2])
+docconts <- as.vector(docs[,2])
+docnames <- as.vector(docs[,3])
+
 
 
 logfunc("log.txt", "Matrix Building...")
@@ -115,6 +117,7 @@ logfunc("log.txt", "Result Saving...")
 save(termnames,file="vt_TermNames.RData")
 save(docIDs,file="vt_DocIDs.RData")
 save(docnames,file="vt_DocNames.RData")
+save(docconts,file="vt_DocConts.RData")
 save(mx,file="mx_X.RData")
 save(mx_T,file="mx_T.RData")
 save(mx_S,file="mx_S.RData")
@@ -124,6 +127,7 @@ save(mx_d,file="mx_t(D).RData")
 # write.table(termnames, file = "Termnames.csv", sep = ",", col.names = NA, qmethod = "double")
 # write.table(docIDs, file = "DocIDs.csv", sep = ",", col.names = NA, qmethod = "double")
 # write.table(docnames, file = "Docnames.csv", sep = ",", col.names = NA, qmethod = "double")
+# write.table(docconts, file = "DocConts.csv", sep = ",", col.names = NA, qmethod = "double")
 # write.table(mx, file = "X.csv", sep = ",", col.names = NA, qmethod = "double")
 # write.table(round(mx_T,3), file = "T.csv", sep = ",", col.names = NA, qmethod = "double")
 # write.table(round(mx_S,3), file = "S.csv", sep = ",", col.names = NA, qmethod = "double")
